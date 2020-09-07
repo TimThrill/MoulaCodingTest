@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moula.Payment.GateWay", "Moula.Payment.GateWay\Moula.Payment.GateWay.csproj", "{5AE3282C-417D-4447-B24A-ECAC19070005}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moula.Payment.GateWay", "Moula.Payment.GateWay\Moula.Payment.GateWay.csproj", "{5AE3282C-417D-4447-B24A-ECAC19070005}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moula.Payment.Domain", "Moula.Payment.Domain\Moula.Payment.Domain.csproj", "{8A50AB1A-F414-4A2D-A06B-92AC75B72161}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moula.Payment.Infrastructure", "Moula.Payment.Infrastructure\Moula.Payment.Infrastructure.csproj", "{443780DD-9506-4AE5-9282-772C7AC5694C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{5AE3282C-417D-4447-B24A-ECAC19070005}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AE3282C-417D-4447-B24A-ECAC19070005}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AE3282C-417D-4447-B24A-ECAC19070005}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A50AB1A-F414-4A2D-A06B-92AC75B72161}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A50AB1A-F414-4A2D-A06B-92AC75B72161}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A50AB1A-F414-4A2D-A06B-92AC75B72161}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A50AB1A-F414-4A2D-A06B-92AC75B72161}.Release|Any CPU.Build.0 = Release|Any CPU
+		{443780DD-9506-4AE5-9282-772C7AC5694C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{443780DD-9506-4AE5-9282-772C7AC5694C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{443780DD-9506-4AE5-9282-772C7AC5694C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{443780DD-9506-4AE5-9282-772C7AC5694C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
