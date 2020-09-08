@@ -11,7 +11,7 @@ namespace Moula.Payment.GateWay.Application.Commands
     {
         public Task<Unit> Handle(CreatePaymentCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Unit.Value);
         }
     }
 }

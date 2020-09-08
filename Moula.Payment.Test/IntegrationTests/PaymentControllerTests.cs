@@ -1,5 +1,6 @@
 ﻿using Moula.Payment.Domain;
 using Moula.Payment.GateWay;
+using Moula.Payment.GateWay.Application.Commands;
 using Moula.Payment.GateWay.Application.ViewModels;
 using Moula.Payment.Test.Helpers;
 using System;
@@ -35,6 +36,27 @@ namespace Moula.Payment.Test.IntegrationTests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
+        #region Test CreatePayment endpoint
+        [Fact]
+        public async Task Post_CreatePaymentWithAmountLessThanZero_BadRequest()
+        {
+            var content = new StringContent(JsonSerializer.Serialize<CreatePaymentCommand>(
+                new CreatePaymentCommand
+                {
+                    Amount = -1,
+                    CreatedDate = DateTimeOffset.UtcNow.AddDays(1)
+                }), Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await _client.PostAsync("api/Payment/CreatePayment", content);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+        #endregion
+
+        #region Test GetBalanceAndPayments endpoint
         [Fact]
         public async Task Get_GetAccountBalanceAndPaymentsWithoutUserId_ReturnNotFound()
         {
@@ -65,5 +87,6 @@ namespace Moula.Payment.Test.IntegrationTests
             Assert.Equal(Enum.GetName(typeof(PaymentStatus), PaymentStatus.Pending), firstPayment.Status);
             Assert.Null(firstPayment.ClosedReason);
         }
+        #endregion
     }
 }
