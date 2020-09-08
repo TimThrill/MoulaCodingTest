@@ -9,6 +9,6 @@ namespace Moula.Payment.GateWay.Application.Commands
     public class CreatePaymentCommand : IRequest
     {
         public decimal Amount { get; set; }
-        public DateTimeOffset CreateDate { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
     }
 }

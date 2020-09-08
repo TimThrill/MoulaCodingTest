@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moula.Payment.GateWay.Application.Commands;
+using Moula.Payment.GateWay.Application.ViewModels;
 
 namespace Moula.Payment.GateWay.Controllers
 {
@@ -14,9 +15,14 @@ namespace Moula.Payment.GateWay.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public PaymentController(IMediator mediator)
+        private readonly IPaymentQuery _paymentQuery;
+
+
+        public PaymentController(IMediator mediator,
+            IPaymentQuery paymentQuery)
         {
             _mediator = mediator;
+            _paymentQuery = paymentQuery;
         }
 
         [HttpGet]
@@ -26,10 +32,29 @@ namespace Moula.Payment.GateWay.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentCommand payment)
+        public async Task<IActionResult> CreatePaymentAsync([FromBody] CreatePaymentCommand payment)
         {
             await _mediator.Send(payment);
             return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CancelPaymentAsync([FromBody] Guid paymentId)
+        {
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProcessPaymentAsync([FromBody] Guid paymentId)
+        {
+            return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBalanceAndPaymentsAsync(int userId)
+        {
+            var result = await _paymentQuery.GetUserBalanceAndPaymentsAsync(userId);
+            return Ok(result);
         }
     }
 }
