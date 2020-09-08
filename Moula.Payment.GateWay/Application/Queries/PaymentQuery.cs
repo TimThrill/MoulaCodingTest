@@ -24,6 +24,7 @@ namespace Moula.Payment.GateWay.Application.Queries
         {
             var balanceAndPayment = new BalanceAndPaymentsViewModel();
             balanceAndPayment.Payments = _mapper.Map<ICollection<PaymentViewModel>>(await _context.Payments.Where(p => p.UserId == userId).ToListAsync());
+            balanceAndPayment.Balance = _context.UserAccounts.FirstOrDefault(a => a.UserId == userId)?.Balance ?? 0;
 
             return balanceAndPayment;
         }

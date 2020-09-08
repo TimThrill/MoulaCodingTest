@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Moula.Payment.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,8 @@ namespace Moula.Payment.GateWay.Application.ViewModels
     {
         public MappingProfile()
         {
-            CreateMap<Domain.AggregatesModel.PaymentAggerate.Payment, PaymentViewModel>();
+            CreateMap<Domain.AggregatesModel.PaymentAggerate.Payment, PaymentViewModel>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.GetName(typeof(PaymentStatus), src.Status)));
         }
     }
 }

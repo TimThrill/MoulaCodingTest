@@ -51,9 +51,13 @@ namespace Moula.Payment.GateWay.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBalanceAndPaymentsAsync(int userId)
+        public async Task<IActionResult> GetBalanceAndPaymentsAsync(int? userId)
         {
-            var result = await _paymentQuery.GetUserBalanceAndPaymentsAsync(userId);
+            if(userId == null)
+            {
+                return NotFound();
+            }
+            var result = await _paymentQuery.GetUserBalanceAndPaymentsAsync(userId.Value);
             return Ok(result);
         }
     }

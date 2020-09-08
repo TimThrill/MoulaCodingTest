@@ -10,5 +10,7 @@ namespace Moula.Payment.Domain.AggregatesModel.PaymentAggerate
         public int UserId { get; set; }
         public decimal Amount { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
+        public PaymentStatus Status { get; set; }
+        public string ClosedReason { get; set; }
     }
 }

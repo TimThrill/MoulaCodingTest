@@ -8,8 +8,9 @@ namespace Moula.Payment.Infrastructure
 {
     public class PaymentContext : DbContext
     {
-        public DbSet<Domain.AggregatesModel.PaymentAggerate.Payment> Payments { get;set; }
+        public DbSet<Domain.AggregatesModel.PaymentAggerate.Payment> Payments { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserAccount> UserAccounts { get; set; }
 
         public PaymentContext(DbContextOptions<PaymentContext> options) : base(options) { }
     }
