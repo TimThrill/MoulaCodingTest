@@ -46,8 +46,9 @@ namespace Moula.Payment.GateWay.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessPaymentAsync([FromBody] Guid paymentId)
+        public async Task<IActionResult> ProcessPaymentAsync([FromBody] ProcessPaymentCommand payment)
         {
+            await _mediator.Send(payment);
             return Ok();
         }
 

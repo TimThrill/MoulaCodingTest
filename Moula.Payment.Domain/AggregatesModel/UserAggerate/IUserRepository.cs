@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Moula.Payment.Domain.AggregatesModel.UserAggerate
 {
-    public interface IUserRepository
+    public interface IUserRepository: IRepository<User>
     {
         Task<UserAccount> GetUserAccountAsync(int userId);
     }

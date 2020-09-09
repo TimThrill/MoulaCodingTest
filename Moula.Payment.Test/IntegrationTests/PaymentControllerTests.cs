@@ -23,11 +23,11 @@ namespace Moula.Payment.Test.IntegrationTests
         public PaymentControllerTests(MoulaWebApplicationFactory<Startup> factory)
         {
             _factory = factory;
-            _client = factory.CreateClient();
+            _client = _factory.CreateClient();
         }
 
         [Fact]
-        public async Task Get_HealthCheck_ReturnOk()
+        public async Task Get_HealthCheck_Ok()
         {
             // Act
             var response = await _client.GetAsync("api/Payment/HealthCheck");
@@ -78,7 +78,7 @@ namespace Moula.Payment.Test.IntegrationTests
         }
 
         [Fact]
-        public async Task Post_CreatePaymentWithInsufficientFund_BadRequest()
+        public async Task Post_CreatePaymentWithInsufficientFund_Ok()
         {
             var content = new StringContent(JsonSerializer.Serialize<CreatePaymentCommand>(
                 new CreatePaymentCommand
@@ -95,6 +95,52 @@ namespace Moula.Payment.Test.IntegrationTests
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+        #endregion
+
+        #region Test ProcessPaymentAsync endpoint
+        [Fact]
+        public async Task Post_ProcessPendingPayment_Ok()
+        {
+            var content = new StringContent(JsonSerializer.Serialize<ProcessPaymentCommand>(
+                new ProcessPaymentCommand
+                {
+                    PaymentId = Utilities.PendingPaymentForProcess.Id
+                }), Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await _client.PostAsync("api/Payment/ProcessPayment", content);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Post_ProcessClosedOrProcessedPayment_BadRequest()
+        {
+            var content = new StringContent(JsonSerializer.Serialize<ProcessPaymentCommand>(
+                new ProcessPaymentCommand
+                {
+                    PaymentId = Utilities.ClosedPayment.Id
+                }), Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await _client.PostAsync("api/Payment/ProcessPayment", content);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+            content = new StringContent(JsonSerializer.Serialize<ProcessPaymentCommand>(
+                new ProcessPaymentCommand
+                {
+                    PaymentId = Utilities.ProcessedPayment.Id
+                }), Encoding.UTF8, "application/json");
+
+            // Act
+            response = await _client.PostAsync("api/Payment/ProcessPayment", content);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
         #endregion
 
@@ -153,7 +199,7 @@ namespace Moula.Payment.Test.IntegrationTests
                 new CancelPaymentCommand
                 {
                     // Closed payment id
-                    PaymentId = Utilities.PendingPayment.Id
+                    PaymentId = Utilities.PendingPaymentForCancel.Id
                 }), Encoding.UTF8, "application/json");
 
             // Act
@@ -166,7 +212,7 @@ namespace Moula.Payment.Test.IntegrationTests
 
         #region Test GetBalanceAndPayments endpoint
         [Fact]
-        public async Task Get_GetAccountBalanceAndPaymentsWithoutUserId_ReturnNotFound()
+        public async Task Get_GetAccountBalanceAndPaymentsWithoutUserId_NotFound()
         {
             var response = await _client.GetAsync("api/Payment/GetBalanceAndPayments");
 
@@ -175,10 +221,10 @@ namespace Moula.Payment.Test.IntegrationTests
         }
 
         [Fact]
-        public async Task Get_GetUserInitialAccountBalanceAndPayments_ReturnOk()
+        public async Task Get_GetUserAccountBalanceAndPayments_Ok()
         {
             // Act
-            var response = await _client.GetAsync("api/Payment/GetBalanceAndPayments?userId=1");
+            var response = await _client.GetAsync($"api/Payment/GetBalanceAndPayments?userId={Utilities.DefaultUserId}");
             var userAccountBalanceAndPayment = JsonSerializer
                 .Deserialize<BalanceAndPaymentsViewModel>(await response.Content.ReadAsStringAsync()
                 , new JsonSerializerOptions
@@ -188,12 +234,6 @@ namespace Moula.Payment.Test.IntegrationTests
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(Utilities.InitialBalance, userAccountBalanceAndPayment.Balance);
-
-            var firstPayment = userAccountBalanceAndPayment.Payments.OrderBy(p => p.CreatedDate).First();
-            Assert.Equal(Utilities.DefaultPaymentAmount, firstPayment.Amount);
-            Assert.Equal(Enum.GetName(typeof(PaymentStatus), PaymentStatus.Pending), firstPayment.Status);
-            Assert.Null(firstPayment.ClosedReason);
         }
         #endregion
     }

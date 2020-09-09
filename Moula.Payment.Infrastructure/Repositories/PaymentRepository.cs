@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moula.Payment.Domain;
 using Moula.Payment.Domain.AggregatesModel.PaymentAggerate;
+using Moula.Payment.Domain.AggregatesModel.UserAggerate;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -35,6 +36,16 @@ namespace Moula.Payment.Infrastructure.Repositories
         public async Task<Domain.AggregatesModel.PaymentAggerate.Payment> GetPayment(Guid paymentId)
         {
             return await _context.Payments.FirstOrDefaultAsync(p => p.Id.Equals(paymentId));
+        }
+
+        public async Task<UserAccount> GetPaymentAccount(Guid paymentId)
+        {
+            var payment = await _context.Payments.FirstOrDefaultAsync(p => p.Id.Equals(paymentId));
+            if(payment == null)
+            {
+                return null;
+            }
+            return await _context.UserAccounts.FirstOrDefaultAsync(ua => ua.UserId == payment.UserId);
         }
     }
 }

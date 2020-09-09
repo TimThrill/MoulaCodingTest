@@ -11,7 +11,7 @@ namespace Moula.Payment.Test.Helpers
         public static decimal InitialBalance = 10000;
         public static decimal DefaultPaymentAmount = new decimal(199.99);
         public static int DefaultUserId = 1;
-        public static Domain.AggregatesModel.PaymentAggerate.Payment PendingPayment =
+        public static Domain.AggregatesModel.PaymentAggerate.Payment PendingPaymentForCancel =
             new Domain.AggregatesModel.PaymentAggerate.Payment
             {
                 Id = new Guid("00000000-0000-0000-0000-000000000001"),
@@ -20,10 +20,19 @@ namespace Moula.Payment.Test.Helpers
                 Amount = DefaultPaymentAmount,
                 Status = Domain.PaymentStatus.Pending
             };
-        public static Domain.AggregatesModel.PaymentAggerate.Payment ClosedPayment =
+        public static Domain.AggregatesModel.PaymentAggerate.Payment PendingPaymentForProcess =
             new Domain.AggregatesModel.PaymentAggerate.Payment
             {
                 Id = new Guid("00000000-0000-0000-0000-000000000002"),
+                UserId = DefaultUserId,
+                CreatedDate = DateTimeOffset.UtcNow,
+                Amount = DefaultPaymentAmount,
+                Status = Domain.PaymentStatus.Pending
+            };
+        public static Domain.AggregatesModel.PaymentAggerate.Payment ClosedPayment =
+            new Domain.AggregatesModel.PaymentAggerate.Payment
+            {
+                Id = new Guid("00000000-0000-0000-0000-000000000003"),
                 UserId = DefaultUserId,
                 CreatedDate = DateTimeOffset.UtcNow,
                 Amount = DefaultPaymentAmount,
@@ -32,7 +41,7 @@ namespace Moula.Payment.Test.Helpers
         public static Domain.AggregatesModel.PaymentAggerate.Payment ProcessedPayment =
             new Domain.AggregatesModel.PaymentAggerate.Payment
             {
-                Id = new Guid("00000000-0000-0000-0000-000000000003"),
+                Id = new Guid("00000000-0000-0000-0000-000000000004"),
                 UserId = DefaultUserId,
                 CreatedDate = DateTimeOffset.UtcNow,
                 Amount = DefaultPaymentAmount,
@@ -97,7 +106,8 @@ namespace Moula.Payment.Test.Helpers
         public static ICollection<Domain.AggregatesModel.PaymentAggerate.Payment> GetSeedingPaymentsForUser(int userId)
         {
             List<Moula.Payment.Domain.AggregatesModel.PaymentAggerate.Payment> payments = new List<Domain.AggregatesModel.PaymentAggerate.Payment>();
-            payments.Add(PendingPayment);
+            payments.Add(PendingPaymentForCancel);
+            payments.Add(PendingPaymentForProcess);
             payments.Add(ClosedPayment);
             payments.Add(ProcessedPayment);
 
