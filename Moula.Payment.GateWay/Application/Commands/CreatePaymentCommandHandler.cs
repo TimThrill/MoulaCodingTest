@@ -33,6 +33,7 @@ namespace Moula.Payment.GateWay.Application.Commands
 
             var payment = new Moula.Payment.Domain.AggregatesModel.PaymentAggerate.Payment
             {
+                Id = Guid.NewGuid(),
                 UserId = userAccount.UserId,
                 CreatedDate = request.CreatedDate,
                 Status = Domain.PaymentStatus.Pending,

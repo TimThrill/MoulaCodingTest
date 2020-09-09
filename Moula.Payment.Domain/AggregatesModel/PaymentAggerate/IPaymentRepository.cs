@@ -8,5 +8,6 @@ namespace Moula.Payment.Domain.AggregatesModel.PaymentAggerate
     public interface IPaymentRepository: IRepository<Payment>
     {
         Task<Payment> AddPayment(Payment payment);
+        Task<Payment> GetPayment(Guid paymentId);
     }
 }

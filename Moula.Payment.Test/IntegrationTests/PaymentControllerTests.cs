@@ -98,6 +98,72 @@ namespace Moula.Payment.Test.IntegrationTests
         }
         #endregion
 
+        #region Test CancelPaymentAsync endpoint
+        [Fact]
+        public async Task Post_CancelNonExistingPayment_BadRequest()
+        {
+            var content = new StringContent(JsonSerializer.Serialize<CancelPaymentCommand>(
+                new CancelPaymentCommand
+                {
+                    // Non-existing Guid
+                    PaymentId = Guid.Empty
+                }), Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await _client.PostAsync("api/Payment/CancelPayment", content);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Post_CancelProcessedOrClosedPayment_BadRequest()
+        {
+            var content = new StringContent(JsonSerializer.Serialize<CancelPaymentCommand>(
+                new CancelPaymentCommand
+                {
+                    // Closed payment id
+                    PaymentId = Utilities.ClosedPayment.Id
+                }), Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await _client.PostAsync("api/Payment/CancelPayment", content);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+            content = new StringContent(JsonSerializer.Serialize<CancelPaymentCommand>(
+                new CancelPaymentCommand
+                {
+                    // Closed payment id
+                    PaymentId = Utilities.ProcessedPayment.Id
+                }), Encoding.UTF8, "application/json");
+
+            // Act
+            response = await _client.PostAsync("api/Payment/CancelPayment", content);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Post_CancelPendingPayment_Ok()
+        {
+            var content = new StringContent(JsonSerializer.Serialize<CancelPaymentCommand>(
+                new CancelPaymentCommand
+                {
+                    // Closed payment id
+                    PaymentId = Utilities.PendingPayment.Id
+                }), Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await _client.PostAsync("api/Payment/CancelPayment", content);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+        #endregion
+
         #region Test GetBalanceAndPayments endpoint
         [Fact]
         public async Task Get_GetAccountBalanceAndPaymentsWithoutUserId_ReturnNotFound()
