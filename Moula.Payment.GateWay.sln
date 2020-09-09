@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moula.Payment.Domain", "Mou
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moula.Payment.Infrastructure", "Moula.Payment.Infrastructure\Moula.Payment.Infrastructure.csproj", "{443780DD-9506-4AE5-9282-772C7AC5694C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moula.Payment.Test", "Moula.Payment.Test\Moula.Payment.Test.csproj", "{CE2872B7-EF94-4459-BD67-1C6B10E3907F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moula.Payment.Test", "Moula.Payment.Test\Moula.Payment.Test.csproj", "{CE2872B7-EF94-4459-BD67-1C6B10E3907F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AAB16683-6943-4EEE-9099-4D3CDFEEA98F}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
