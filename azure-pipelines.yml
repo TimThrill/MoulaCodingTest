@@ -1,0 +1,77 @@
+# Node.js with Angular
+# Build a Node.js project that uses Angular.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- develop
+- master
+
+pool:
+  name: 'Azure Pipelines'
+  vmImage: 'windows-2019'
+
+variables:
+  BuildConfiguration: Release
+
+steps:
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core 3.1.x SDK'
+    inputs:
+      version: 3.1.x
+
+  # do this before your build tasks
+  - task: NuGetAuthenticate@0
+  
+  - task: NuGetCommand@2
+    inputs:
+      command: restore
+      projects: '**/*.csproj'
+      feedsToUse: 'config'
+      nugetConfigPath: 'nuget.config'
+
+  - task: DotNetCoreCLI@2
+    displayName: Build
+    inputs:
+      command: build
+      projects: '**/*.csproj'
+      arguments: '--configuration $(BuildConfiguration)' # Update this to match your need
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: test
+      projects: '**/*Tests/*.csproj'
+      arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: publish
+      publishWebProjects: True
+      arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+      zipAfterPublish: True
+
+  # this code takes all the files in $(Build.ArtifactStagingDirectory) and uploads them as an artifact of your build.
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+      artifactName: 'MoulaPayment'
+
+  - task: DotNetCoreCLI@2
+    displayName: install EF Core 3.x
+    inputs:
+      command: custom
+      custom: tool
+      arguments: 'install --global dotnet-ef --version 3.1.1'
+      
+  - task: DotNetCoreCLI@2
+    displayName: generate db migrations sql scripts
+    inputs:
+      command: custom
+      custom: ef
+      arguments: 'migrations script --idempotent -o $(Build.ArtifactStagingDirectory)\Migrations\script.sql'
+      workingDirectory: IO.Admin.Api
+      
+  - task: PublishBuildArtifacts@1
+    displayName: publish migration script
+    inputs:
+      pathToPublish: '$(Build.ArtifactStagingDirectory)\Migrations\script.sql'
