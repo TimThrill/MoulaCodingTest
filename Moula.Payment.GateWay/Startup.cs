@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -15,11 +16,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Moula.Payment.Domain.AggregatesModel.PaymentAggerate;
+using Moula.Payment.Domain.AggregatesModel.UserAggerate;
 using Moula.Payment.GateWay.Application.Behaviours;
+using Moula.Payment.GateWay.Application.Commands;
+using Moula.Payment.GateWay.Application.Filters;
 using Moula.Payment.GateWay.Application.Queries;
 using Moula.Payment.GateWay.Application.Validations;
 using Moula.Payment.GateWay.Application.ViewModels;
 using Moula.Payment.Infrastructure;
+using Moula.Payment.Infrastructure.Repositories;
 
 namespace Moula.Payment.GateWay
 {
@@ -35,17 +41,20 @@ namespace Moula.Payment.GateWay
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreatePaymentCommandValidator>()); ;
+            services.AddControllers(options =>
+                options.Filters.Add(new PaymentExceptionFilter()))
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreatePaymentCommandValidator>());
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen();
 
             // Inject services
+            services.AddTransient<IValidator<CreatePaymentCommand>, CreatePaymentCommandValidator>();
             services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddAutoMapper(typeof(Startup));
             services.AddScoped<IPaymentQuery, PaymentQuery>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

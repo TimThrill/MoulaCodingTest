@@ -43,6 +43,8 @@ namespace Moula.Payment.Test.IntegrationTests
             var content = new StringContent(JsonSerializer.Serialize<CreatePaymentCommand>(
                 new CreatePaymentCommand
                 {
+                    UserId = 1,
+                    // Test amount less than zero
                     Amount = -1,
                     CreatedDate = DateTimeOffset.UtcNow
                 }), Encoding.UTF8, "application/json");
@@ -53,6 +55,46 @@ namespace Moula.Payment.Test.IntegrationTests
 
             // Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Post_CreatePaymentWithNonExistingUser_BadRequest()
+        {
+            var content = new StringContent(JsonSerializer.Serialize<CreatePaymentCommand>(
+                new CreatePaymentCommand
+                {
+                    // Test non-existing user
+                    UserId = -1,
+                    Amount = 100,
+                    CreatedDate = DateTimeOffset.UtcNow
+                }), Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await _client.PostAsync("api/Payment/CreatePayment", content);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Post_CreatePaymentWithInsufficientFund_BadRequest()
+        {
+            var content = new StringContent(JsonSerializer.Serialize<CreatePaymentCommand>(
+                new CreatePaymentCommand
+                {
+                    UserId = 1,
+                    // Test insufficient fund
+                    Amount = Utilities.InitialBalance + 1,
+                    CreatedDate = DateTimeOffset.UtcNow
+                }), Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await _client.PostAsync("api/Payment/CreatePayment", content);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
         #endregion
 

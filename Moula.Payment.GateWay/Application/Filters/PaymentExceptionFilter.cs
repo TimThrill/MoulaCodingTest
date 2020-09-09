@@ -15,7 +15,11 @@ namespace Moula.Payment.GateWay.Application.Filters
         {
             if (context.Exception is PaymentDomainException exception)
             {
-                context.Result = new ObjectResult(exception.InnerException.Message) 
+                context.Result = new ObjectResult(new
+                {
+                    ExceptionMessage = exception.Message,
+                    InnerExceptionMessage = exception.InnerException?.Message
+                }) 
                 {
                     StatusCode = (int)HttpStatusCode.BadRequest
                 };
