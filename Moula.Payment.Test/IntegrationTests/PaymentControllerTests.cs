@@ -44,7 +44,7 @@ namespace Moula.Payment.Test.IntegrationTests
                 new CreatePaymentCommand
                 {
                     Amount = -1,
-                    CreatedDate = DateTimeOffset.UtcNow.AddDays(1)
+                    CreatedDate = DateTimeOffset.UtcNow
                 }), Encoding.UTF8, "application/json");
 
             // Act

@@ -11,8 +11,8 @@ namespace Moula.Payment.GateWay.Application.Validations
     {
         public CreatePaymentCommandValidator()
         {
-            RuleFor(c => c.Amount).GreaterThanOrEqualTo(0).WithMessage("Payment amount must be larger than zero.");
-            RuleFor(c => c.CreatedDate).GreaterThanOrEqualTo(DateTimeOffset.UtcNow).WithMessage("Payment created date must be behind current time.");
+            RuleFor(c => c.Amount).GreaterThanOrEqualTo(0).LessThanOrEqualTo(Decimal.MaxValue).WithMessage("Payment amount must be larger than zero.");
+            RuleFor(c => c.CreatedDate).GreaterThanOrEqualTo(DateTimeOffset.UtcNow.Date).WithMessage("Payment created date must be behind current time.");
         }
     }
 }
